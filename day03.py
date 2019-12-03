@@ -45,10 +45,6 @@ def mapsize(val,direction):
             return None
         # print(ymax,ymin,xmax,xmin)
         i += 1
-    x  = xmax-xmin+1
-    y  = ymax-ymin+20
-    cx = abs(xmin)
-    cy = abs(ymin)
     # print("mapsize check",y,x,cy,cx)
     return ymax,ymin,xmax,xmin
 
@@ -119,41 +115,22 @@ def minway(kablemap,val,direction,cy,cx):
             x = cx
             cont = True
             # print(j)
-            while i < val[j].size and cont == True:
-                if   direction[j][i] == 'L':
-                    for k in range(val[j][i]):
+            while i < val[j].size and cont:
+                for _ in range(val[j][i]):
+                    if   direction[j][i] == 'L':
                         x -= 1
-                        steps += 1
-                        # print('L',y,x,val[j][i],steps)
-                        if z[0] == y and z[1] == x:
-                            cont = False
-                            break
-                elif direction[j][i] == 'R':
-                    for k in range(val[j][i]):
+                    elif direction[j][i] == 'R':
                         x += 1
-                        steps += 1
-                        # print('R',y,x,val[j][i],steps)
-                        if z[0] == y and z[1] == x:
-                            cont = False
-                            break
-                elif direction[j][i] == 'U':
-                    for k in range(val[j][i]):
+                    elif direction[j][i] == 'U':
                         y -= 1
-                        steps += 1
-                        # print('U',y,x,val[j][i],steps)
-                        if z[0] == y and z[1] == x:
-                            cont = False
-                            break
-                elif direction[j][i] == 'D':
-                    for k in range(val[j][i]):
+                    elif direction[j][i] == 'D':
                         y += 1
-                        steps += 1
-                        # print('D',y,x,val[j][i],steps)
-                        if z[0] == y and z[1] == x:
-                            cont = False
-                            break
-                else:
-                    return None
+                    else:
+                        return None
+                    steps += 1
+                    if z[0] == y and z[1] == x:
+                        cont = False
+                        break
                 i += 1
             j += 1
         # print(steps)
@@ -202,6 +179,6 @@ kablemap = np.zeros((y,x), dtype=int)
 kablemap = draw(kablemap, val, direction, cy, cx)
 
 # print(kablemap)
-# print(distance(kablemap, cy, cx))
+print(distance(kablemap, cy, cx))
 print(minway(kablemap, val, direction, cy, cx))
 
