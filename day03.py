@@ -7,13 +7,13 @@ day03.load()
 data = np.array([day03.data[0].split(','),day03.data[1].split(',')])
 
 
-# 159   y130 x239
+# 159       610
 # data = np.array([["R75","D30","R83","U83","L12","D49","R71","U7","L72"],["U62","R66","U55","R34","D71","R55","D58","R83"]])
 
-# 135
+# 135       410
 # data = np.array([["R98","U47","R26","D63","R33","U87","L62","D20","R33","U53","R51"],["U98","R91","D20","R16","D67","R40","U7","R15","U6","R7"]])
 
-# 6
+# 6         30
 # data = np.array([["R8","U5","L5","D3"],["U7","R6","D4","L4"]])
 
 def mapsize(val,direction):
@@ -43,13 +43,13 @@ def mapsize(val,direction):
                 ymax = y
         else:
             return None
-        print(ymax,ymin,xmax,xmin)
+        # print(ymax,ymin,xmax,xmin)
         i += 1
     x  = xmax-xmin+1
     y  = ymax-ymin+20
     cx = abs(xmin)
     cy = abs(ymin)
-    print("mapsize check",y,x,cy,cx)
+    # print("mapsize check",y,x,cy,cx)
     return ymax,ymin,xmax,xmin
 
 def draw(kablemap,val,direction,cy,cx):
@@ -105,20 +105,62 @@ def draw(kablemap,val,direction,cy,cx):
     return kablemap
 
 def distance(kablemap,cy,cx):
-    mindist = 10000000
-    intersec = np.argwhere(kablemap == 3)
-    for i in intersec:
-        tempy = abs(cy - i[0])
-        tempx = abs(cx - i[1])
-        # print(tempx,tempy)
-        tempdist = tempx + tempy
-        if tempdist < mindist:
-            mindist = tempdist
-    print("distance check")
-    return mindist
-
-def distance_fast(kablemap,cy,cx):
     return min(abs(x[0]-cy) + abs(x[1]-cx)  for x in np.argwhere(kablemap==3))
+
+def minway(kablemap,val,direction,cy,cx):
+    minsteps = np.inf
+    for z in np.argwhere(kablemap==3):    
+        j = 0
+        steps = 0
+        # print(z[0],z[1])
+        while j < val.shape[0]:
+            i = 0
+            y = cy
+            x = cx
+            cont = True
+            # print(j)
+            while i < val[j].size and cont == True:
+                if   direction[j][i] == 'L':
+                    for k in range(val[j][i]):
+                        x -= 1
+                        steps += 1
+                        # print('L',y,x,val[j][i],steps)
+                        if z[0] == y and z[1] == x:
+                            cont = False
+                            break
+                elif direction[j][i] == 'R':
+                    for k in range(val[j][i]):
+                        x += 1
+                        steps += 1
+                        # print('R',y,x,val[j][i],steps)
+                        if z[0] == y and z[1] == x:
+                            cont = False
+                            break
+                elif direction[j][i] == 'U':
+                    for k in range(val[j][i]):
+                        y -= 1
+                        steps += 1
+                        # print('U',y,x,val[j][i],steps)
+                        if z[0] == y and z[1] == x:
+                            cont = False
+                            break
+                elif direction[j][i] == 'D':
+                    for k in range(val[j][i]):
+                        y += 1
+                        steps += 1
+                        # print('D',y,x,val[j][i],steps)
+                        if z[0] == y and z[1] == x:
+                            cont = False
+                            break
+                else:
+                    return None
+                i += 1
+            j += 1
+        # print(steps)
+        if steps < minsteps:
+            minsteps = steps
+    return minsteps
+
 
 val = np.array([np.array(np.char.lstrip(data[0], 'LRUD'), dtype=int), np.array(np.char.lstrip(data[1], 'LRUD'), dtype=int)])
 direction = np.array([np.char.rstrip(data[0], '0123456789'), np.char.rstrip(data[1], '0123456789')])
@@ -155,10 +197,11 @@ cy = abs(ymin)
 
 kablemap = np.zeros((y,x), dtype=int)
 
-print(kablemap.shape)
+# print(kablemap.shape)
 
 kablemap = draw(kablemap, val, direction, cy, cx)
 
 # print(kablemap)
-print(distance_fast(kablemap, cy, cx))
+# print(distance(kablemap, cy, cx))
+print(minway(kablemap, val, direction, cy, cx))
 
