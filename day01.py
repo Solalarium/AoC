@@ -1,6 +1,9 @@
 from util import Day
 
-def magic(data):
+def fuel(data):
+    return(data//3-2)
+
+def fuelchain(data):
     fuel = data
     data = 0
     while fuel>0:
@@ -11,7 +14,7 @@ def magic(data):
 
 day01 = Day(1,2)
 day01.load(int)
-day01.apply(magic)
+day01.apply(fuelchain)
 
 result = sum(day01.data)
 

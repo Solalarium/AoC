@@ -36,7 +36,7 @@ def compute(memory):
             return None
         memory = temp
         instruction_pointer += 4
-    return memory[0]
+    return memory
 
 noun = 0
 verb = 0
@@ -53,5 +53,5 @@ for noun in range(100):
         break
 
 result = 100 * noun + verb
-print(day02.answer(result))
+#print(day02.answer(result))
 # print(day02.answer(memory[0]))
