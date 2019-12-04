@@ -15,7 +15,7 @@ class Day:
         Returns:
             list -- Data for Problem
         """
-        with open(f"day{self.day:02d}.txt") as f:
+        with open(f"input/day{self.day:02d}.txt") as f:
             data = f.read().split(sep)
         if "" in data:
             data.remove("")
