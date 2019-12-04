@@ -1,3 +1,5 @@
+from util import Day
+
 def split(x):
     if x >= 1000000 or x <= 99999: return(False)
     return([x//100000, (x % 100000)//10000, (x % 10000)//1000, (x % 1000)//100, (x % 100)//10, x % 10])
@@ -23,5 +25,8 @@ def foo(lower,upper):
         if is_pass(i): count += 1     
     return(count)      
 
-#print(is_pass(split(223455)))
-print(foo(158126,624574))
+day04 = Day(4,2)
+day04.load(int,sep='-')
+
+
+print(foo(day04.data[0],day04.data[1]))
