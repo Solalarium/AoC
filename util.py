@@ -45,6 +45,17 @@ class Day:
         self.data = list(map(func, self.data))
         return self.data
 
+    def opcode(self) -> list:
+        for i in range(0,len(self.data),4):
+            if self.data[i] == 1:
+                self.data[self.data[i+3]] = self.data[self.data[i+1]] + self.data[self.data[i+2]]
+            elif self.data[i] == 2:
+                self.data[self.data[i+3]] = self.data[self.data[i+1]] * self.data[self.data[i+2]]
+            elif self.data[i] == 99:
+                return self.data 
+            else:
+                break
+
     def answer(self, num) -> str:
         self.result = num
         return f"The Solution on Day {self.day} for Part {self.part} is: {num}"

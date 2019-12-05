@@ -1,57 +1,27 @@
 from util import Day
 
-day02 = Day(2,2)
-day02.load(int,",")
-data = day02.data
+# --Part01--
+part1 = Day(2,1)
+part1.load(int,',')
 
-# memory[1] = 12
-# memory[2] = 2
+part1.data[1] = 12
+part1.data[2] = 2
 
-def op1(data,param1,param2,param3):
-    data[param3] = data[param1] + data[param2]
-    return data
+data = part1.opcode()
 
-def op2(data,param1,param2,param3):
-    data[param3] = data[param1] * data[param2]
-    return data
+print(part1.answer(part1.data[0]))
 
-def opcode(memory,address):
-    if   memory[address] == 1:
-        memory = op1(memory,memory[address+1],memory[address+2],memory[address+3])
-    elif memory[address] == 2:
-        memory = op2(memory,memory[address+1],memory[address+2],memory[address+3])
-    elif memory[address] == 99:
-        return 0
-    else:
-        return None
-    return memory
+# --Part02--
+part2 = Day(2,2)
+part2.load(int,',')
 
-def compute(memory):
-    instruction_pointer = 0
-    while True:
-        temp = opcode(memory,instruction_pointer)
-        if temp == 0:
-            break
-        if temp == None:
-            return None
-        memory = temp
-        instruction_pointer += 4
-    return memory
+def find_inputs():
+    for i in range(100):
+        for j in range(100):
+            part2.data[1] = i
+            part2.data[2] = j
+            if part2.opcode()[0] == 19690720:
+                return(100 * i + j)
+            part2.reset()
 
-noun = 0
-verb = 0
-
-for noun in range(100):
-    for verb in range(100):
-        memory = data.copy()
-        memory[1] = noun
-        memory[2] = verb
-        temp = compute(memory)
-        if temp == 19690720:
-            break
-    if temp == 19690720:
-        break
-
-result = 100 * noun + verb
-#print(day02.answer(result))
-# print(day02.answer(memory[0]))
+print(part2.answer(find_inputs()))
