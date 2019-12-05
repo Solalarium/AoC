@@ -6,9 +6,9 @@ part1.load(int,',')
 
 part1.data[1] = 12
 part1.data[2] = 2
-
+#print(part1.data)
 data = part1.opcode()
-
+#print(part1.data)
 print(part1.answer(part1.data[0]))
 
 # --Part02-- 7912

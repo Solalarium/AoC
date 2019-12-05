@@ -45,13 +45,34 @@ class Day:
         self.data = list(map(func, self.data))
         return self.data
 
+    def get_param(self,i,param):
+        if len(str(self.data[i])) >= param+2:
+            if str(self.data[i])[-(param+2)] == '1':
+                return self.data[i+param]
+            else:
+                return self.data[self.data[i+param]]
+        else:
+            return self.data[self.data[i+param]]
     def opcode(self) -> list:
-        for i in range(0,len(self.data),4):
-            if self.data[i] == 1:
-                self.data[self.data[i+3]] = self.data[self.data[i+1]] + self.data[self.data[i+2]]
-            elif self.data[i] == 2:
-                self.data[self.data[i+3]] = self.data[self.data[i+1]] * self.data[self.data[i+2]]
-            elif self.data[i] == 99:
+        #-1&-2 -> opcode, -3 -> mode.para1, -4 -> mode.para2, -5 -> mode.para3
+        i = 0
+        output = []
+        while i < len(self.data):
+            if str(self.data[i])[-1:] == '1':
+                self.data[self.data[i+3]] = self.get_param(i,1) + self.get_param(i,2)
+                i += 4
+            elif str(self.data[i])[-1:] == '2':
+                self.data[self.data[i+3]] = self.get_param(i,1) * self.get_param(i,2)
+                i += 4
+            elif str(self.data[i])[-1:] == '3':
+                self.data[self.data[i+1]] = int(input())
+                i += 2
+            elif str(self.data[i])[-1:] == '4':
+                output.append(self.get_param(i,1))
+                i += 2
+                if str(self.data[i])[-2:] == '99':
+                    return output
+            elif str(self.data[i])[-2:] == '99':
                 return self.data 
             else:
                 break
