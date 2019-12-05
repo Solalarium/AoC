@@ -1,6 +1,6 @@
 from util import Day
 
-# --Part01--
+# --Part01-- 3409710
 part1 = Day(2,1)
 part1.load(int,',')
 
@@ -11,7 +11,7 @@ data = part1.opcode()
 
 print(part1.answer(part1.data[0]))
 
-# --Part02--
+# --Part02-- 7912
 part2 = Day(2,2)
 part2.load(int,',')
 
