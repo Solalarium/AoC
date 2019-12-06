@@ -1,3 +1,5 @@
+import sys
+sys.path.insert(0, '.')
 from util import Day
 from day01 import *
 

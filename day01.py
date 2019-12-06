@@ -12,26 +12,22 @@ def fuelchain(data):
             data += fuel
     return(data)
 
-# --Part 1-- 3295206
-part1 = Day(1,1)
-part1.load(int)
-part1.apply(fuel)
+if __name__ == '__main__':
 
-result = sum(part1.data)
-
-print(part1.answer(result))
-
-# --Part 2-- 4939939
-part2 = Day(1,2)
-part2.load(int)
-part2.apply(fuelchain)
-
-result = sum(part2.data)
-
-print(part2.answer(result))
-
-def test_given():
+    # --Part 1-- 3295206
     part1 = Day(1,1)
-    part1.load(int, data=12)
+    part1.load(int)
     part1.apply(fuel)
-    assert sum(part1.data) == 2
+
+    result = sum(part1.data)
+
+    print(part1.answer(result))
+
+    # --Part 2-- 4939939
+    part2 = Day(1,2)
+    part2.load(int)
+    part2.apply(fuelchain)
+
+    result = sum(part2.data)
+
+    print(part2.answer(result))
