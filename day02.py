@@ -1,21 +1,6 @@
 from util import Day
 
-# --Part01-- 3409710
-part1 = Day(2,1)
-part1.load(int,',')
-
-part1.data[1] = 12
-part1.data[2] = 2
-#print(part1.data)
-data = part1.opcode()
-#print(part1.data)
-print(part1.answer(part1.data[0]))
-
-# --Part02-- 7912
-part2 = Day(2,2)
-part2.load(int,',')
-
-def find_inputs():
+def find_inputs(part2):
     for i in range(100):
         for j in range(100):
             part2.data[1] = i
@@ -24,4 +9,21 @@ def find_inputs():
                 return(100 * i + j)
             part2.reset()
 
-print(part2.answer(find_inputs()))
+if __name__ == '__main__':
+
+    # --Part01-- 3409710
+
+    part1 = Day(2,1)
+    part1.load(typing=int, sep=',')
+
+    part1.data[1] = 12
+    part1.data[2] = 2
+    part1.opcode()
+    print(part1.answer(part1.data[0]))
+
+    # --Part02-- 7912
+
+    part2 = Day(2,2)
+    part2.load(typing=int, sep=',')
+
+    print(part2.answer(find_inputs(part2)))
