@@ -181,9 +181,9 @@ if __name__ == '__main__':
     kablemap,cx,cy = init_map(val,direction)
     kablemap = draw(kablemap, val, direction, cy, cx)
 
-    # --Part1-- 1285
+    # --Part1-- result=1285
     print(distance(kablemap, cy, cx))
 
-    # --Part2-- 14228
+    # --Part2-- result=14228
     print(minway(kablemap, val, direction, cy, cx))
 
