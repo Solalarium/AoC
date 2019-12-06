@@ -22,14 +22,16 @@ def counter(lower,upper,is_pass):
         if is_pass(i): count += 1
     return(count)
 
-# --Part1-- result=1665
-day04 = Day(4,1)
-day04.load(int,sep='-')
+if __name__ == '__main__':
 
-print(day04.answer(counter(day04.data[0],day04.data[1],is_pass_part1)))
+    # --Part1-- result=1665
+    day04 = Day(4,1)
+    day04.load(int,sep='-')
 
-# --Part2-- result=1131
-day04 = Day(4,2)
-day04.load(int,sep='-')
+    print(day04.answer(counter(day04.data[0],day04.data[1],is_pass_part1)))
 
-print(day04.answer(counter(day04.data[0],day04.data[1],is_pass_part2)))
+    # --Part2-- result=1131
+    day04 = Day(4,2)
+    day04.load(int,sep='-')
+
+    print(day04.answer(counter(day04.data[0],day04.data[1],is_pass_part2)))

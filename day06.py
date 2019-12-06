@@ -44,27 +44,29 @@ def count_orbits(nr_of_each_orbits):
         nr_of_all_orbits += nr_of_each_orbits[k]
     return nr_of_all_orbits
 
-# --Part 1-- 139597
-test1 = ['COM)B','B)C','C)D','D)E','E)F','B)G','G)H','D)I','E)J','J)K','K)L']
-part1 = Day(6,1)
-part1.load()
+if __name__ == '__main__':
 
-orbit = make_orbit_dict(part1.data)
+    # --Part 1-- 139597
+    test1 = ['COM)B','B)C','C)D','D)E','E)F','B)G','G)H','D)I','E)J','J)K','K)L']
+    part1 = Day(6,1)
+    part1.load()
 
-nr_of_each_orbits = keyfinder(orbit,'COM',{},0)
+    orbit = make_orbit_dict(part1.data)
 
-print(part1.answer(count_orbits(nr_of_each_orbits)))
+    nr_of_each_orbits = keyfinder(orbit,'COM',{},0)
 
-# --Part 2-- 286
-test2 = ['COM)B','B)C','C)D','D)E','E)F','B)G','G)H','D)I','E)J','J)K','K)L','K)YOU','I)SAN']
-part2 = Day(6,2)
-part2.load()
+    print(part1.answer(count_orbits(nr_of_each_orbits)))
 
-orbit = make_orbit_dict(part2.data)
+    # --Part 2-- 286
+    test2 = ['COM)B','B)C','C)D','D)E','E)F','B)G','G)H','D)I','E)J','J)K','K)L','K)YOU','I)SAN']
+    part2 = Day(6,2)
+    part2.load()
 
-you = way_to_center(orbit,'YOU',[])
-san = way_to_center(orbit,'SAN',[])
-new_center = find_new_center(you,san)
+    orbit = make_orbit_dict(part2.data)
 
-result = distance_to_center(orbit,new_center,'YOU')+distance_to_center(orbit,new_center,'SAN')-2
-print(part2.answer(result))
+    you = way_to_center(orbit,'YOU',[])
+    san = way_to_center(orbit,'SAN',[])
+    new_center = find_new_center(you,san)
+
+    result = distance_to_center(orbit,new_center,'YOU')+distance_to_center(orbit,new_center,'SAN')-2
+    print(part2.answer(result))
