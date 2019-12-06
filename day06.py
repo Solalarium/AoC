@@ -7,13 +7,6 @@ def make_orbit_dict(data):
         orbit.update({orbiter:orbitet})
     return orbit
 
-# --Part 1-- 139597
-test1 = ['COM)B','B)C','C)D','D)E','E)F','B)G','G)H','D)I','E)J','J)K','K)L']
-part1 = Day(6,1)
-part1.load()
-
-orbit = make_orbit_dict(part1.data)
-
 def keyfinder(orbit,keys,nr_of_each_orbits,instances):
     instances += 1
     for k in orbit:
@@ -21,23 +14,6 @@ def keyfinder(orbit,keys,nr_of_each_orbits,instances):
             nr_of_each_orbits.update({k:instances})
             keyfinder(orbit,k,nr_of_each_orbits,instances)
     return nr_of_each_orbits
-
-nr_of_each_orbits = {}
-nr_of_all_orbits = 0
-
-nr_of_each_orbits = keyfinder(orbit,'COM',{},0)
-
-for k in nr_of_each_orbits:
-    nr_of_all_orbits += nr_of_each_orbits[k]
-
-print(part1.answer(nr_of_all_orbits))
-
-# --Part 2-- 286
-test2 = ['COM)B','B)C','C)D','D)E','E)F','B)G','G)H','D)I','E)J','J)K','K)L','K)YOU','I)SAN']
-part2 = Day(6,2)
-part2.load()
-
-orbit = make_orbit_dict(part2.data)
 
 def way_to_center(orbit,keys,planets):
     for k in orbit:
@@ -61,6 +37,30 @@ def distance_to_center(orbit,keys,halt,distance=-1):
             answer = distance_to_center(orbit,k,halt,distance)
             if answer != None:
                 return answer
+
+def count_orbits(nr_of_each_orbits):
+    nr_of_all_orbits = 0
+    for k in nr_of_each_orbits:
+        nr_of_all_orbits += nr_of_each_orbits[k]
+    return nr_of_all_orbits
+
+# --Part 1-- 139597
+test1 = ['COM)B','B)C','C)D','D)E','E)F','B)G','G)H','D)I','E)J','J)K','K)L']
+part1 = Day(6,1)
+part1.load()
+
+orbit = make_orbit_dict(part1.data)
+
+nr_of_each_orbits = keyfinder(orbit,'COM',{},0)
+
+print(part1.answer(count_orbits(nr_of_each_orbits)))
+
+# --Part 2-- 286
+test2 = ['COM)B','B)C','C)D','D)E','E)F','B)G','G)H','D)I','E)J','J)K','K)L','K)YOU','I)SAN']
+part2 = Day(6,2)
+part2.load()
+
+orbit = make_orbit_dict(part2.data)
 
 you = way_to_center(orbit,'YOU',[])
 san = way_to_center(orbit,'SAN',[])
