@@ -1,12 +1,6 @@
 import numpy as np
 from util import Day
 
-day03 = Day(3,1)
-
-day03.load()
-data = np.array([day03.data[0].split(','),day03.data[1].split(',')])
-
-
 # 159       610
 # data = np.array([["R75","D30","R83","U83","L12","D49","R71","U7","L72"],["U62","R66","U55","R34","D71","R55","D58","R83"]])
 
@@ -15,6 +9,11 @@ data = np.array([day03.data[0].split(','),day03.data[1].split(',')])
 
 # 6         30
 # data = np.array([["R8","U5","L5","D3"],["U7","R6","D4","L4"]])
+def splitter(day03):
+    data = np.array([day03.data[0].split(','),day03.data[1].split(',')])
+    val = np.array([np.array(np.char.lstrip(data[0], 'LRUD'), dtype=int), np.array(np.char.lstrip(data[1], 'LRUD'), dtype=int)])
+    direction = np.array([np.char.rstrip(data[0], '0123456789'), np.char.rstrip(data[1], '0123456789')])
+    return val,direction
 
 def mapsize(val,direction):
     i = 0
@@ -47,6 +46,41 @@ def mapsize(val,direction):
         i += 1
     # print("mapsize check",y,x,cy,cx)
     return ymax,ymin,xmax,xmin
+
+def init_map(val,direction):
+    size1 = mapsize(val[0], direction[0])
+    size2 = mapsize(val[1], direction[1])
+
+    ymax  = 0
+    ymin  = 0
+    xmax = 0
+    xmin = 0
+
+    if size1[0] > size2[0]:
+        ymax  = size1[0]
+    else:
+        ymax  = size2[0]
+    if size1[1] < size2[1]:
+        ymin  = size1[1]
+    else:
+        ymin  = size2[1]
+    if size1[2] > size2[2]:
+        xmax  = size1[2]
+    else:
+        xmax  = size2[2]
+    if size1[3] < size2[3]:
+        xmin  = size1[3]
+    else:
+        xmin  = size2[3]
+
+    x  = xmax-xmin+1
+    y  = ymax-ymin+1
+    cx = abs(xmin)
+    cy = abs(ymin)
+
+    kablemap = np.zeros((y,x), dtype=int)
+
+    return kablemap,cx,cy
 
 def draw(kablemap,val,direction,cy,cx):
     j = 0
@@ -97,7 +131,7 @@ def draw(kablemap,val,direction,cy,cx):
                 return None
             i += 1
         j += 1
-    print("draw check")
+    # print("draw check")
     return kablemap
 
 def distance(kablemap,cy,cx):
@@ -138,47 +172,18 @@ def minway(kablemap,val,direction,cy,cx):
             minsteps = steps
     return minsteps
 
+if __name__ == '__main__':
 
-val = np.array([np.array(np.char.lstrip(data[0], 'LRUD'), dtype=int), np.array(np.char.lstrip(data[1], 'LRUD'), dtype=int)])
-direction = np.array([np.char.rstrip(data[0], '0123456789'), np.char.rstrip(data[1], '0123456789')])
+    day03 = Day(3,1)
+    day03.load()
 
-size1 = mapsize(val[0], direction[0])
-size2 = mapsize(val[1], direction[1])
+    val,direction = splitter(day03)
+    kablemap,cx,cy = init_map(val,direction)
+    kablemap = draw(kablemap, val, direction, cy, cx)
 
-ymax  = 0
-ymin  = 0
-xmax = 0
-xmin = 0
+    # --Part1-- 1285
+    print(distance(kablemap, cy, cx))
 
-if size1[0] > size2[0]:
-    ymax  = size1[0]
-else:
-    ymax  = size2[0]
-if size1[1] < size2[1]:
-    ymin  = size1[1]
-else:
-    ymin  = size2[1]
-if size1[2] > size2[2]:
-    xmax  = size1[2]
-else:
-    xmax  = size2[2]
-if size1[3] < size2[3]:
-    xmin  = size1[3]
-else:
-    xmin  = size2[3]
-
-x  = xmax-xmin+1
-y  = ymax-ymin+1
-cx = abs(xmin)
-cy = abs(ymin)
-
-kablemap = np.zeros((y,x), dtype=int)
-
-# print(kablemap.shape)
-
-kablemap = draw(kablemap, val, direction, cy, cx)
-
-# print(kablemap)
-print(distance(kablemap, cy, cx))
-print(minway(kablemap, val, direction, cy, cx))
+    # --Part2-- 14228
+    print(minway(kablemap, val, direction, cy, cx))
 
