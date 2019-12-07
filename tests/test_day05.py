@@ -28,11 +28,11 @@ def test_part2_given_0():
     part2.apply(int)
     part2.opcode(7)
     assert part2.result == 999
-    part2.reset()
-    part2.apply(int)
+    part2.reset_apply()
+    part2.opcode_input = None
     part2.opcode(8)
     assert part2.result == 1000
-    part2.reset()
-    part2.apply(int)
+    part2.reset_apply()
+    part2.opcode_input = None
     part2.opcode(9)
     assert part2.result == 1001

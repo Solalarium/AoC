@@ -4,6 +4,7 @@ class Day:
         self.day  = day
         self.part = part
         self.desc = description(day, part)
+        self.opcode_input = None
     
     def load(self, typing=str, sep="\n", data=None) -> list:
         """Loads Data for Problem
@@ -26,12 +27,19 @@ class Day:
                 data.remove("")
             self.data = list(map(typing, data))
         self.raw_data = self.data.copy()
+        self.raw_apply_data = self.data.copy()
         return self.data
     
     def reset(self,):
         """Reset Data to original
         """
         self.data = self.raw_data.copy()
+
+    def reset_apply(self,):
+        """Reset Data to to state after applying a function
+        """
+        self.data = self.raw_apply_data.copy()
+
 
     def apply(self, func) -> list:
         """Apply a function to every element.
@@ -43,10 +51,11 @@ class Day:
             list -- Function applied to every element in input
         """
         self.data = list(map(func, self.data))
+        self.raw_apply_data = self.data.copy()
         return self.data
 
     
-    def opcode(self,input1=0) -> list:
+    def opcode(self,input1=None) -> list:
         #-1&-2 -> opcode, -3 -> mode.para1, -4 -> mode.para2, -5 -> mode.para3
         def __opmode(i,param):
             if len(str(self.data[i])) >= param+2:
@@ -56,6 +65,15 @@ class Day:
                     return self.data[self.data[i+param]]
             else:
                 return self.data[self.data[i+param]]
+
+        def __input(input1):
+            if input1 == None and self.opcode_input == None:
+                self.opcode_input = input()
+            elif self.opcode_input == None:
+                self.opcode_input = input1
+            return self.opcode_input
+
+            
         i = 0
         while i < len(self.data):
             if str(self.data[i])[-1:] == '1': #add
@@ -65,7 +83,7 @@ class Day:
                 self.data[self.data[i+3]] = __opmode(i,1) * __opmode(i,2)
                 i += 4
             elif str(self.data[i])[-1:] == '3': #input
-                self.data[self.data[i+1]] = input1
+                self.data[self.data[i+1]] = __input(input1)
                 i += 2
             elif str(self.data[i])[-1:] == '4': #output
                 self.result = (__opmode(i,1))
