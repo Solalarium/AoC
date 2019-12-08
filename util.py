@@ -4,7 +4,9 @@ class Day:
         self.day  = day
         self.part = part
         self.desc = description(day, part)
-        self.opcode_input = None
+        self.opcode_input = []
+        self.opcode_index = 0
+        self.concurrent = False
     
     def load(self, typing=str, sep="\n", data=None) -> list:
         """Loads Data for Problem
@@ -34,13 +36,14 @@ class Day:
         """Reset Data to original
         """
         self.data = self.raw_data.copy()
+        self.opcode_index = 0
 
     def reset_apply(self,):
         """Reset Data to to state after applying a function
         """
+        self.reset()
         self.data = self.raw_apply_data.copy()
-
-
+        
     def apply(self, func) -> list:
         """Apply a function to every element.
         Changes the original data.
@@ -66,49 +69,45 @@ class Day:
             else:
                 return self.data[self.data[i+param]]
 
-        def __input(input1):
-            if input1 == None and self.opcode_input == None:
-                self.opcode_input = input()
-            elif self.opcode_input == None:
-                self.opcode_input = input1
-            return self.opcode_input
+        if input1 != None:
+            self.opcode_input.append(input1)
 
-            
-        i = 0
-        while i < len(self.data):
-            if str(self.data[i])[-1:] == '1': #add
-                self.data[self.data[i+3]] = __opmode(i,1) + __opmode(i,2)
-                i += 4
-            elif str(self.data[i])[-1:] == '2': #multiply
-                self.data[self.data[i+3]] = __opmode(i,1) * __opmode(i,2)
-                i += 4
-            elif str(self.data[i])[-1:] == '3': #input
-                self.data[self.data[i+1]] = __input(input1)
-                i += 2
-            elif str(self.data[i])[-1:] == '4': #output
-                self.result = (__opmode(i,1))
-                i += 2
-            elif str(self.data[i])[-1:] == '5': #jump-if-true
-                if __opmode(i,1) != 0:
-                    i = __opmode(i,2)
-                else: i += 3
-            elif str(self.data[i])[-1:] == '6': #jump-if-false
-                if __opmode(i,1) == 0:
-                    i = __opmode(i,2)
-                else: i += 3
-            elif str(self.data[i])[-1:] == '7': #less than
-                if __opmode(i,1) < __opmode(i,2):
-                    self.data[self.data[i+3]] = 1
+        while self.opcode_index < len(self.data): #3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,1,1,5
+            if str(self.data[self.opcode_index])[-1:] == '1': #add
+                self.data[self.data[self.opcode_index+3]] = __opmode(self.opcode_index,1) + __opmode(self.opcode_index,2)
+                self.opcode_index += 4
+            elif str(self.data[self.opcode_index])[-1:] == '2': #multiply
+                self.data[self.data[self.opcode_index+3]] = __opmode(self.opcode_index,1) * __opmode(self.opcode_index,2)
+                self.opcode_index += 4
+            elif str(self.data[self.opcode_index])[-1:] == '3': #input
+                self.data[self.data[self.opcode_index+1]] = self.opcode_input.pop(0)
+                self.opcode_index += 2
+            elif str(self.data[self.opcode_index])[-1:] == '4': #output
+                self.result = __opmode(self.opcode_index,1)
+                self.opcode_index += 2
+                if self.concurrent is True: return self.result
+            elif str(self.data[self.opcode_index])[-1:] == '5': #jump-if-true
+                if __opmode(self.opcode_index,1) != 0:
+                    self.opcode_index = __opmode(self.opcode_index,2)
+                else: self.opcode_index += 3
+            elif str(self.data[self.opcode_index])[-1:] == '6': #jump-if-false
+                if __opmode(self.opcode_index,1) == 0:
+                    self.opcode_index = __opmode(self.opcode_index,2)
+                else: self.opcode_index += 3
+            elif str(self.data[self.opcode_index])[-1:] == '7': #less than
+                if __opmode(self.opcode_index,1) < __opmode(self.opcode_index,2):
+                    self.data[self.data[self.opcode_index+3]] = 1
                 else:
-                    self.data[self.data[i+3]] = 0
-                i += 4
-            elif str(self.data[i])[-1:] == '8': #equals
-                if __opmode(i,1) == __opmode(i,2):
-                    self.data[self.data[i+3]] = 1
+                    self.data[self.data[self.opcode_index+3]] = 0
+                self.opcode_index += 4
+            elif str(self.data[self.opcode_index])[-1:] == '8': #equals
+                if __opmode(self.opcode_index,1) == __opmode(self.opcode_index,2):
+                    self.data[self.data[self.opcode_index+3]] = 1
                 else:
-                    self.data[self.data[i+3]] = 0
-                i += 4
-            elif str(self.data[i])[-2:] == '99': #break
+                    self.data[self.data[self.opcode_index+3]] = 0
+                self.opcode_index += 4
+            elif str(self.data[self.opcode_index])[-2:] == '99': #break
+                self.concurrent = False
                 return self.data 
             else:
                 break
