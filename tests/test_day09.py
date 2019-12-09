@@ -7,7 +7,7 @@ def test_part1():
     part1 = Day(9,1)
     part1.load(typing=int,sep=',')
     part1.opcode(1)
-    assert part1.result_list == [3335138414]
+    assert part1.result == 3335138414
 
 def test_part1_given0():
     part1 = Day(9,1)
@@ -29,3 +29,9 @@ def test_part1_given2():
     part1.apply(int)
     part1.opcode()
     assert part1.result == 1125899906842624
+
+def test_part2():
+    part2 = Day(9,2)
+    part2.load(typing=int, sep=',')
+    part2.opcode(2)
+    assert part2.result == 49122

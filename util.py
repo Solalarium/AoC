@@ -139,8 +139,9 @@ class Day:
             else:
                 break
 
-    def answer(self, num) -> str:
-        self.result = num
+    def answer(self, num=None) -> str:
+        if num == None: num = self.result
+        else: self.result = num
         return f"The Solution on Day {self.day} for Part {self.part} is: {num}"
 
 if __name__ == "__main__":
