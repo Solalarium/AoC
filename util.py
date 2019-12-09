@@ -4,9 +4,11 @@ class Day:
         self.day  = day
         self.part = part
         self.desc = description(day, part)
-        self.opcode_input = []
-        self.opcode_index = 0
-        self.concurrent = False
+        self.opcode_input  = []
+        self.opcode_index  = 0
+        self.concurrent    = False
+        self.relative_base = 0
+        self.result_list   = []
     
     def load(self, typing=str, sep="\n", data=None) -> list:
         """Loads Data for Problem
@@ -58,56 +60,81 @@ class Day:
         return self.data
 
     
-    def opcode(self,input1=None) -> list:
+    def opcode(self, input1=None, list_out=False) -> list:
         #-1&-2 -> opcode, -3 -> mode.para1, -4 -> mode.para2, -5 -> mode.para3
-        def __opmode(i,param):
-            if len(str(self.data[i])) >= param+2:
-                if str(self.data[i])[-(param+2)] == '1':
-                    return self.data[i+param]
-                else:
-                    return self.data[self.data[i+param]]
+        def __opmode(param):
+            if len(str(self.data[self.opcode_index])) >= param+2:
+                if str(self.data[self.opcode_index])[-(param+2)] == '1':
+                    return self.data[self.opcode_index+param]
+                elif str(self.data[self.opcode_index])[-(param+2)] == '2':
+                    __checksize(param, relative=True)
+                    return self.data[self.data[self.opcode_index+param]+self.relative_base]
+            __checksize(param)
+            return self.data[self.data[self.opcode_index+param]]
+
+        def __rel_input(param):
+            if len(str(self.data[self.opcode_index])) >= param+2:
+                if str(self.data[self.opcode_index])[-(param+2)] == '2':
+                    __checksize(param, relative=True)
+                    return self.data[self.opcode_index+param]+self.relative_base
+            __checksize(param)
+            return self.data[self.opcode_index+param]
+
+        def __checksize(param, relative=False):
+            if relative == True:
+                if len(self.data) < self.data[self.opcode_index+param]+1+self.relative_base:
+                    for _ in range(len(self.data),self.data[self.opcode_index+param]+1+self.relative_base):
+                        self.data.append(0)
             else:
-                return self.data[self.data[i+param]]
+                if len(self.data) < self.data[self.opcode_index+param]+1:
+                    for _ in range(len(self.data),self.data[self.opcode_index+param]+1):
+                        self.data.append(0)
 
         if input1 != None:
             self.opcode_input.append(input1)
 
-        while self.opcode_index < len(self.data): #3,26,1001,26,-4,26,3,27,1002,27,2,27,1,27,26,27,4,27,1001,28,-1,28,1005,28,6,99,1,1,5
+        while self.opcode_index < len(self.data):
             if str(self.data[self.opcode_index])[-1:] == '1': #add
-                self.data[self.data[self.opcode_index+3]] = __opmode(self.opcode_index,1) + __opmode(self.opcode_index,2)
+                self.data[__rel_input(3)] = __opmode(1) + __opmode(2)
                 self.opcode_index += 4
             elif str(self.data[self.opcode_index])[-1:] == '2': #multiply
-                self.data[self.data[self.opcode_index+3]] = __opmode(self.opcode_index,1) * __opmode(self.opcode_index,2)
+                self.data[__rel_input(3)] = __opmode(1) * __opmode(2)
                 self.opcode_index += 4
             elif str(self.data[self.opcode_index])[-1:] == '3': #input
-                self.data[self.data[self.opcode_index+1]] = self.opcode_input.pop(0)
+                self.data[__rel_input(1)] = self.opcode_input.pop(0)
                 self.opcode_index += 2
             elif str(self.data[self.opcode_index])[-1:] == '4': #output
-                self.result = __opmode(self.opcode_index,1)
+                self.result = __opmode(1)
+                self.result_list.append(self.result)
                 self.opcode_index += 2
                 if self.concurrent is True: return self.result
             elif str(self.data[self.opcode_index])[-1:] == '5': #jump-if-true
-                if __opmode(self.opcode_index,1) != 0:
-                    self.opcode_index = __opmode(self.opcode_index,2)
+                if __opmode(1) != 0:
+                    self.opcode_index = __opmode(2)
                 else: self.opcode_index += 3
             elif str(self.data[self.opcode_index])[-1:] == '6': #jump-if-false
-                if __opmode(self.opcode_index,1) == 0:
-                    self.opcode_index = __opmode(self.opcode_index,2)
+                if __opmode(1) == 0:
+                    self.opcode_index = __opmode(2)
                 else: self.opcode_index += 3
             elif str(self.data[self.opcode_index])[-1:] == '7': #less than
-                if __opmode(self.opcode_index,1) < __opmode(self.opcode_index,2):
-                    self.data[self.data[self.opcode_index+3]] = 1
+                if __opmode(1) < __opmode(2):
+                    self.data[__rel_input(3)] = 1
                 else:
-                    self.data[self.data[self.opcode_index+3]] = 0
+                    self.data[__rel_input(3)] = 0
                 self.opcode_index += 4
             elif str(self.data[self.opcode_index])[-1:] == '8': #equals
-                if __opmode(self.opcode_index,1) == __opmode(self.opcode_index,2):
-                    self.data[self.data[self.opcode_index+3]] = 1
+                if __opmode(1) == __opmode(2):
+                    self.data[__rel_input(3)] = 1
                 else:
-                    self.data[self.data[self.opcode_index+3]] = 0
+                    self.data[__rel_input(3)] = 0
                 self.opcode_index += 4
+            elif str(self.data[self.opcode_index])[-1:] == '9' and str(self.data[self.opcode_index])[-2:] != '99': #set relative Base
+                self.relative_base += __opmode(1)
+                self.opcode_index += 2
             elif str(self.data[self.opcode_index])[-2:] == '99': #break
                 self.concurrent = False
+                if list_out == True:
+                    return self.result_list
                 return self.data 
             else:
                 break
@@ -117,9 +144,8 @@ class Day:
         return f"The Solution on Day {self.day} for Part {self.part} is: {num}"
 
 if __name__ == "__main__":
-    day = Day(1,1)
+    day = Day(9,1)
+    day.load(typing=int,sep=',')
+    day.opcode(1)
 
-    print("Data is:", day.data(int))
-    print("Day is:", day.day)
-    print("Part is:", day.part)
-    print("Description is:", day.desc)
+    print(day.answer(day.result))
